@@ -19,7 +19,7 @@ NLTK
 ## Installation
 
 1. Clone the repository to your local machine or EC2 instance
-````````````~~```
+```
 git clone https://github.com/r0ckYr/HealthcareChatBot.git
 cd HealthcareChatBot
 ```
