@@ -34,7 +34,7 @@ If you want to retrain the chatbot on your custom dataset, follow these steps:
 Create or modify the 'intents.json' file with your dataset, following the existing structure.
 Run the training script:
 ```
-python train_chatbot.py
+python bot.py
 ```
 
 2. Starting the Flask Application To run the chatbot as a Flask application, execute the following command:
