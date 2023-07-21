@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Healthcare ChatBot</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0-beta3/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-image: url("/static/bg.jpg");  /* Light gray background color for the whole page */
+    }
+
+    h1{
+        color: #17a2b8;
+        font-weight: bolder;
+    }
+
+    .chat-container {
+      width: 28rem;
+      height: 26rem;
+      margin: 0 auto;
+      padding-top: 4rem;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      position: relative;
+      overflow-y: scroll;
+      background-color: #fff; /* White background color for the chat container */ 
+    }
+
+    .input-box{
+      width: 10rem;
+      margin: 0 auto; 
+      background-color: #fff; /* White background color for the chat container */
+    }
+
+    .message-container {
+      margin-bottom: 20px;
+    }
+
+    .message-container .user-message {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .message-container .bot-message {
+      background-color: #17a2b8;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .input-box{
+      width: 30rem;
+    }
+
+    /* Custom scroll styles */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #bbb;
+      border-radius: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #999;
+    }
+
+    .user-message-container {
+      text-align: right;
+    }
+
+    .bot-message-container {
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1>Healthcare ChatBot</h1> <!-- Updated title -->
+    <div class="chat-container mt-4" id="chat-container">
+      <div id="chat-messages"></div>  
+  </div>
+    <div class="input-group input-box mb-3 mt-4">
+      <input type="text" class="form-control" id="user-input" placeholder="Type your message here" onkeypress="handleKeyPress(event)">
+      <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+    </div>  
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    displayWelcomeMessage();
+  });
+
+  function displayWelcomeMessage() {
+    const welcomeMessage = "Welcome to the Healthcare ChatBot! How can I assist you today?";
+    addMessage(welcomeMessage, 'bot');
+  }
+    function addMessage(content, sender) {
+      const chatMessages = document.getElementById('chat-messages');
+      const messageContainer = document.createElement('div');
+      messageContainer.classList.add('message-container');
+
+      const message = document.createElement('div');
+      message.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+      message.textContent = content;
+      messageContainer.appendChild(message);
+
+      chatMessages.appendChild(messageContainer);
+
+      // Scroll to the bottom of the chat container
+      const chatContainer = document.getElementById('chat-container');
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    }
+
+    function sendMessage() {
+      const userInput = document.getElementById('user-input').value;
+      if (userInput.trim() === '') {
+        return;
+      }
+
+      addMessage(userInput, 'user');
+      document.getElementById('user-input').value = '';
+
+      fetch('/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_input: userInput
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        addMessage(data.response, 'bot');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    function handleKeyPress(event) {
+      if (event.keyCode === 13) {
+        sendMessage();
+      }
+    }
+
+    function hideWelcomeMessage() {
+    const welcomeMessageContainer = document.querySelector('.bot-message-container');
+    welcomeMessageContainer.style.display = 'none';
+  }
+  </script>
+</body>
+</html>
+
